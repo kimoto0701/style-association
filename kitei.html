@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>監理団体の業務の運営に関する規程 | 協同組合スタイルアソシエーション</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#172033;
+  --ink-2:#2f3a4e;
+  --muted:#687386;
+  --line:#dfe5ed;
+  --soft:#f4f7fa;
+  --paper:#ffffff;
+  --navy:#0d223d;
+  --blue:#1e66d0;
+  --blue-2:#e8f1ff;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Noto Sans JP",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+a{color:inherit}
+.site-header{
+  position:fixed;
+  inset:0 0 auto;
+  z-index:50;
+  height:72px;
+  background:rgba(255,255,255,.92);
+  border-bottom:1px solid rgba(223,229,237,.86);
+  backdrop-filter:blur(18px);
+}
+.header-inner{
+  max-width:1180px;
+  height:100%;
+  margin:0 auto;
+  padding:0 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:28px;
+}
+.brand{
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  line-height:1.25;
+}
+.brand strong{font-size:16px;letter-spacing:.04em;font-weight:800}
+.brand span{font-family:Inter,sans-serif;font-size:11px;letter-spacing:.16em;color:var(--blue);text-transform:uppercase}
+.header-actions{display:flex;align-items:center;gap:12px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  white-space:nowrap;min-height:46px;padding:0 22px;border-radius:6px;
+  border:1px solid transparent;text-decoration:none;font-size:14px;
+  font-weight:700;letter-spacing:.02em;transition:background .2s,border-color .2s,color .2s,transform .2s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-outline{background:#fff;color:var(--navy);border-color:var(--line)}
+.btn-outline:hover{border-color:#b8c5d5;background:var(--soft)}
+.page-hero{
+  padding:128px 24px 60px;
+  background:var(--soft);
+  border-bottom:1px solid var(--line);
+}
+.page-hero-inner{max-width:900px;margin:0 auto}
+.breadcrumb{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--muted);margin-bottom:20px;
+}
+.breadcrumb a{text-decoration:none;color:var(--blue)}
+.breadcrumb span{color:var(--muted)}
+.page-hero h1{
+  font-size:clamp(24px,4vw,38px);
+  font-weight:800;line-height:1.25;
+  letter-spacing:0;margin-bottom:12px;
+}
+.page-hero p{color:var(--muted);font-size:15px}
+.doc-wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:64px 24px 100px;
+}
+.doc-meta{
+  background:var(--blue-2);
+  border:1px solid rgba(30,102,208,.15);
+  border-radius:8px;
+  padding:20px 24px;
+  margin-bottom:48px;
+  font-size:14px;
+  color:var(--ink-2);
+  display:flex;gap:32px;flex-wrap:wrap;
+}
+.doc-meta span{font-weight:700;color:var(--navy)}
+.regulation{display:grid;gap:48px}
+.reg-section{}
+.reg-section h2{
+  font-size:20px;font-weight:800;
+  color:var(--navy);
+  padding-bottom:12px;
+  border-bottom:2px solid var(--blue);
+  margin-bottom:20px;
+}
+.reg-section p{
+  color:var(--ink-2);font-size:15px;line-height:1.9;
+}
+.reg-section p+p{margin-top:14px}
+.reg-ol{
+  list-style:none;
+  counter-reset:reg-item;
+  display:grid;gap:16px;
+  padding:0;
+}
+.reg-ol li{
+  counter-increment:reg-item;
+  display:grid;
+  grid-template-columns:28px 1fr;
+  gap:12px;
+  align-items:start;
+  color:var(--ink-2);
+  font-size:15px;
+  line-height:1.9;
+}
+.reg-ol li::before{
+  content:counter(reg-item);
+  width:28px;height:28px;border-radius:50%;
+  background:var(--blue-2);color:var(--blue);
+  display:grid;place-items:center;
+  font-size:13px;font-weight:800;
+  flex-shrink:0;margin-top:2px;
+}
+.reg-note{
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:16px 20px;
+  font-size:14px;color:var(--muted);
+  line-height:1.75;
+  margin-top:16px;
+}
+.sub-items{
+  margin-top:12px;
+  display:grid;gap:8px;
+  padding-left:4px;
+}
+.sub-items p{
+  position:relative;
+  padding-left:20px;
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.75;
+}
+.sub-items p::before{
+  content:"";
+  position:absolute;left:0;top:.7em;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--blue);
+}
+.back-bar{
+  text-align:center;
+  padding:40px 24px;
+  border-top:1px solid var(--line);
+}
+.site-footer{
+  background:#071424;color:#d9e2ef;padding:54px 24px 32px;
+}
+.footer-inner{
+  max-width:1180px;margin:0 auto;
+  display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:44px;
+}
+.footer-logo{font-size:17px;font-weight:800;margin-bottom:12px}
+.footer-inner p,.footer-inner a,.footer-inner li{color:#aebbd0;font-size:14px;text-decoration:none}
+.footer-inner h3{color:#fff;font-size:13px;letter-spacing:.12em;margin-bottom:14px}
+.footer-inner ul{list-style:none;display:grid;gap:8px}
+.footer-bottom{
+  max-width:1180px;margin:38px auto 0;
+  padding-top:22px;border-top:1px solid rgba(255,255,255,.14);
+  display:flex;justify-content:space-between;gap:20px;
+  color:#8392a8;font-size:12px;
+}
+@media(max-width:640px){
+  .site-header{height:66px}
+  .header-inner{padding:0 16px}
+  .brand strong{font-size:14px}
+  .doc-meta{flex-direction:column;gap:12px}
+  .footer-inner{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column}
+  .page-hero{padding:108px 18px 48px}
+  .doc-wrap{padding:48px 18px 80px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand" aria-label="協同組合スタイルアソシエーション ホーム">
+      <strong>協同組合スタイルアソシエーション</strong>
+      <span>Style Association</span>
+    </a>
+    <div class="header-actions">
+      <a class="btn btn-outline" href="index.html">← トップへ戻る</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">ホーム</a>
+      <span>/</span>
+      <span>公開資料</span>
+      <span>/</span>
+      <span>監理団体の業務の運営に関する規程</span>
+    </div>
+    <h1>監理団体の業務の運営に関する規程</h1>
+    <p>事業所名：協同組合スタイルアソシエーション</p>
+  </div>
+</div>
+
+<main class="doc-wrap">
+  <div class="doc-meta">
+    <div><span>事業所名</span>　協同組合 スタイルアソシエーション（Style Association）</div>
+    <div><span>所在地</span>　岡山県倉敷市鶴の浦3-2-1</div>
+  </div>
+
+  <div class="regulation">
+
+    <div class="reg-section">
+      <h2>第１　目的</h2>
+      <p>この規定は、外国人の技能実習の適正な実施及び技能実習生の保護に関する法律及びその関係法令（以下「技能実習関係法令」という。）に基づいて、本事業所において監理事業を行うに当たって必要な事項について、規程として定めるものです。</p>
+    </div>
+
+    <div class="reg-section">
+      <h2>第２　求人</h2>
+      <ol class="reg-ol">
+        <li><div>本事業所は、（取扱職種の範囲等）の技能実習に関するものに限り、いかなる求人の申込みについてもこれを受理します。ただし、その申込みの内容が法令に違反する場合、その申込みの内容である賃金、労働時間その他の労働条件が通常の労働条件と比べて著しく不適当であると認める場合、又は団体監理型実習実施者等が労働条件等の明示をしない場合は、その申込みを受理しません。</div></li>
+        <li><div>求人の申込みは、団体監理型実習実施者等（団体監理型実習実施者又は団体監理型実習実施者になろうとする者をいう。以下同じ。）又はその代理人の方が直接来所されて、所定の求人票によりお申込みください。なお、直接来所できないときは、郵便、電話、ファックス又は電子メールでも差し支えありません。</div></li>
+        <li><div>求人申込みの際には、業務の内容、賃金、労働時間その他の労働条件をあらかじめ書面の交付又は電子メールの使用により明示してください。ただし、紹介の実施について緊急の必要があるため、あらかじめ書面の交付又は電子メールの使用による明示ができないときは、当該明示すべき事項をあらかじめこれら方法以外の方法により明示してください。</div></li>
+        <li><div>求人受付の際には、監理費（職業紹介費）を、別表の監理費表に基づき申し受けます。いったん申し受けました手数料は、紹介の成否にかかわらずお返しいたしません。</div></li>
+      </ol>
+    </div>
+
+    <div class="reg-section">
+      <h2>第３　求職</h2>
+      <ol class="reg-ol">
+        <li><div>本事業所は、（取扱職種の範囲等）の技能実習に関する限り、いかなる求職の申込みについてもこれを受理します。ただし、その申込みの内容が法令に違反するときは、これを受理しません。</div></li>
+        <li><div>求職申込みは、団体監理型技能実習生等（団体監理型技能実習生又は団体監理型技能実習生になろうとする者をいう。以下同じ。）又はその代理人（外国の送出機関から求職の申込みの取次ぎを受けるときは、外国の送出機関）から、所定の求人票によりお申込みください。郵便、電話、ファックス又は電子メールで差し支えありません。</div></li>
+      </ol>
+    </div>
+
+    <div class="reg-section">
+      <h2>第４　技能実習に関する職業紹介</h2>
+      <ol class="reg-ol">
+        <li><div>団体監理型技能実習生等の方には、職業安定法第２条にも規定される職業選択の自由の趣旨を踏まえ、その御希望と能力に応ずる職業に速やかに就くことができるよう極力お世話いたします。</div></li>
+        <li><div>団体監理型実習実施者等の方には、その御希望に適合する団体監理型技能実習生等を極力お世話いたします。</div></li>
+        <li><div>技能実習職業紹介に際しては、団体監理型技能実習生等の方に、技能実習に関する職業紹介において、従事することとなる業務の内容、賃金、労働時間その他の労働条件をあらかじめ書面の交付又は希望される場合には電子メールの使用により明示します。ただし、技能実習に関する職業紹介の実施について緊急の必要があるためあらかじめ書面の交付又は電子メールの使用による明示ができないときは、あらかじめそれら方法以外の方法により明示を行います。</div></li>
+        <li><div>団体監理型技能実習生等の方を団体監理型実習実施者等に紹介する場合には、紹介状を発行します。その紹介状を持参して団体監理型実習実施者等との面接を行っていただきます。</div></li>
+        <li><div>いったん求人、求職の申込みを受けた以上、責任をもって技能実習に関する職業紹介の労をとります。</div></li>
+        <li><div>本事業所は、労働争議に対する中立の立場をとるため、同盟罷業又は作業閉鎖の行われている間は団体監理型実習実施者等に、技能実習に関する職業紹介をいたしません。</div></li>
+        <li><div>就職が決定しましたら求人された方から監理費（職業紹介費）を、別表の監理費表に基づき申し受けます。</div></li>
+      </ol>
+    </div>
+
+    <div class="reg-section">
+      <h2>第５　団体監理型技能実習の実施に関する監理</h2>
+      <ol class="reg-ol">
+        <li><div>団体監理型実習実施者が認定計画に従って技能実習を行わせているか等、監理責任者の指揮の下、主務省令第52条第１号イからホまでに定める方法（団体監理型技能実習生が従事する業務の性質上当該方法によることが著しく困難な場合にあっては、他の適切な方法）によって３か月に１回以上の頻度で監査を行うほか、実習認定の取消し事由に該当する疑いがあると認めたときは、直ちに監査を行います。</div></li>
+        <li><div>第１号団体監理型技能実習に係る実習監理にあっては、監理責任者の指揮の下、１か月に１回以上の頻度で、団体監理型実習実施者が認定計画に従って団体監理型技能実習を行わせているかについて実地による確認（団体監理型技能実習生が従事する業務の性質上当該方法によることが著しく困難な場合にあっては、他の適切な方法による確認）を行うとともに、団体監理型実習実施者に対し必要な指導を行います。</div></li>
+        <li><div>技能実習を労働力の需給の調整の手段と誤認させるような方法で、団体監理型実習実施者等の勧誘又は監理事業の紹介をしません。</div></li>
+        <li><div>第一号団体監理型技能実習にあっては、認定計画に従って入国後講習を実施し、かつ、入国後講習の期間中は、団体監理型技能実習生を業務に従事させません。</div></li>
+        <li><div>技能実習計画作成の指導に当たって、団体監理型技能実習を行わせる事業所及び団体監理型技能実習生の宿泊施設を実地に確認するほか、主務省令第52条第８号イからハに規定する観点から指導を行います。</div></li>
+        <li><div>技能実習生の帰国旅費（第３号技能実習の開始前の一時帰国を含む。）を負担するとともに技能実習生が円滑に帰国できるよう必要な措置を講じます。</div></li>
+        <li><div>団体監理型技能実習生との間で認定計画と反する内容の取決めをしません。</div></li>
+        <li><div>実習監理を行っている団体監理型技能実習生からの相談に適切に応じるとともに、団体監理型実習実施者及び団体監理型技能実習生への助言、指導その他の必要な措置が講じます。</div></li>
+        <li><div>本事業所内に監理団体の許可証を備え付けるとともに、本事業所内の一般の閲覧に便利な場所に、本規程を掲示します。</div></li>
+        <li><div>技能実習の実施が困難となった場合には、技能実習生が引き続き技能実習を行うことを希望するものが技能実習を行うことができるよう、他の監理団体等との連絡調整等を行います。</div></li>
+        <li><div>上記のほか、技能実習関係法令に従って業務を実施します。</div></li>
+      </ol>
+    </div>
+
+    <div class="reg-section">
+      <h2>第６　監理責任者</h2>
+      <ol class="reg-ol">
+        <li><div>本事業所の監理責任者は、遠部木綿子です。</div></li>
+        <li>
+          <div>監理責任者は、以下に関する事項を統括管理します。
+            <div class="sub-items">
+              <p>団体監理型技能実習生の受入れの準備</p>
+              <p>団体監理型技能実習生の技能等の修得等に関する団体監理型実習実施者への指導及び助言並びに団体監理型実習実施者との連絡調整</p>
+              <p>団体監理型技能実習生の保護</p>
+              <p>団体監理型実習実施者等及び団体監理型技能実習生等の個人情報の管理</p>
+              <p>団体監理型技能実習生の労働条件、産業安全及び労働衛生に関し、技能実習責任者との連絡調整に関すること</p>
+              <p>国及び地方公共団体の機関、機構その他関係機関との連絡調整</p>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="reg-section">
+      <h2>第７　監理費の徴収</h2>
+      <ol class="reg-ol">
+        <li><div>監理費は、団体監理型実習実施者等へあらかじめ用途及び金額を明示した上で徴収します。</div></li>
+        <li><div>監理費（職業紹介費）は、団体監理型実習実施者等から求人の申込みを受理した時以降に当該団体監理型実習実施者等から、別表の監理費表に基づき申し受けます。その額は、団体監理型実習実施者等と団体監理型技能実習生等との間における雇用関係の成立のあっせんに係る事務に要する費用（募集及び選抜に要する人件費、交通費、外国の送出機関へ支払う費用その他の実費に限る。）の額を超えない額とします。</div></li>
+        <li><div>監理費（講習費）は、入国前講習に要する費用にあっては入国前講習の開始日以降に入国後講習に要する費用にあっては入国後講習の開始日以降に、団体監理型実習実施者等から、別表の監理費表に基づき申し受けます。その額は、監理団体が実施する入国前講習及び入国後講習に要する費用（監理団体が支出する施設使用料、講師及び通訳人への謝金、教材費、第一号団体監理型技能実習生に支給する手当その他の実費に限る。）の額を超えない額とします。</div></li>
+        <li><div>監理費（監査指導費）は、団体監理型技能実習生が団体監理型実習実施者の事業所において業務に従事し始めた時以降一定期間ごとに当該団体監理型実習実施者から、別表の監理費表に基づき申し受けます。その額は、団体監理型技能実習の実施に関する監理に要する費用（団体監理型実習実施者に対する監査及び指導に要する人件費、交通費その他の実費に限る。）の額を超えない額とします。</div></li>
+        <li><div>監理費（その他諸経費）は、当該費用が必要となった時以降に団体監理型実習実施者等から、別表の監理費表に基づき申し受けます。その額は、その他技能実習の適正な実施及び技能実習生の保護に資する費用（実費に限る。）の額を超えない額とします。</div></li>
+      </ol>
+    </div>
+
+    <div class="reg-section">
+      <h2>第８　その他</h2>
+      <ol class="reg-ol">
+        <li><div>本事業所は、国及び地方公共団体の機関であって技能実習に関する事務を所掌するもの、外国人技能実習機構その他関係機関と連携を図りつつ、当該事業に係る団体監理型実習実施者等又は団体監理型技能実習生等からの苦情があった場合には、迅速に、適切に対応いたします。</div></li>
+        <li><div>雇用関係が成立しましたら、団体監理型実習実施者等、団体監理型技能実習生等の両方から本事業所に対して、その報告をしてください。また、技能実習に関する職業紹介されたにもかかわらず、雇用関係が成立しなかったときにも同様に報告をしてください。</div></li>
+        <li><div>本事業所は、団体監理型技能実習生等の方又は団体監理型実習実施者等から知り得た個人的な情報は個人情報適正管理規程に基づき、適正に取り扱います。</div></li>
+        <li><div>本事業所は、団体監理型技能実習生等又は団体監理型実習実施者等に対し、その申込みの受理、面接、指導、技能実習に関する職業紹介等の業務について、人種、国籍、信条、性別、社会的身分、門地、従前の職業、労働組合の組合員であること等を理由として差別的な取扱いは一切いたしません。</div></li>
+        <li>
+          <div>本事業所の取扱職種の範囲等は、耕種農業・畜産農業・養殖業・冷凍空気調和機器施工・建具製作・建築大工・型枠施工・鉄筋施工・とび・タイル張り・かわらぶき・左官・配管・熱絶縁施工・内装仕上げ施工・サッシ施工・防水施工・表装・建設機械施工・加熱性水産加工食品製造業・非加熱性水産加工食品製造業・そう菜製造業・鋳造・鍛造・ダイカスト・機械加工・金属プレス加工・鉄工・工場板金・仕上げ・機械検査・機械保全・電子機器組立て・電気機器組立て・家具製作・プラスチック成形・塗装・溶接・工業包装・自動車整備・介護・木材加工です。</div>
+        </li>
+        <li><div>本事業所の業務の運営に関する規定は、以上のとおりですが、本事業所の業務は、全て技能実習関係法令に基づいて運営されますので、御不審の点は係員に詳しくお尋ねください。</div></li>
+      </ol>
+      <div class="reg-note">以上、本規程に基づき業務を運営します。</div>
+    </div>
+
+  </div>
+
+  <div class="back-bar">
+    <a class="btn btn-outline" href="index.html#documents">← 公開資料一覧に戻る</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">協同組合スタイルアソシエーション</div>
+      <p>外国人技能実習制度を通じて、受け入れ企業と実習生の双方に誠実な支援を提供します。</p>
+    </div>
+    <div>
+      <h3>MENU</h3>
+      <ul>
+        <li><a href="index.html#about">制度について</a></li>
+        <li><a href="index.html#process">受入れの流れ</a></li>
+        <li><a href="index.html#support">支援体制</a></li>
+        <li><a href="index.html#documents">公開資料</a></li>
+        <li><a href="index.html#overview">組合概要</a></li>
+        <li><a href="index.html#contact">お問い合わせ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>CONTACT</h3>
+      <ul>
+        <li><a href="tel:086-454-4884">086-454-4884</a></li>
+        <li><a href="mailto:info@style-association.jp">info@style-association.jp</a></li>
+        <li>平日 9:00-17:00</li>
+        <li>〒710-0845<br>岡山県倉敷市鶴の浦3-2-1</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 協同組合スタイルアソシエーション</span>
+    <span>Foreign Technical Intern Training Supervising Organization</span>
+  </div>
+</footer>
+
+</body>
+</html>

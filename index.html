@@ -974,11 +974,7 @@ input:focus,select:focus,textarea:focus{
               title="協同組合スタイルアソシエーション 所在地"></iframe>
           </div>
         </aside>
-        <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
-          <input type="hidden" name="access_key" value="418ee1cc-4c66-415c-8d24-6d58ef30165d">
-          <input type="hidden" name="subject" value="【お問い合わせ】協同組合スタイルアソシエーション">
-          <input type="hidden" name="from_name" value="スタイルアソシエーション Webサイト">
-          <input type="hidden" name="redirect" value="false">
+        <form class="contact-form" id="contact-form">
           <h3>お問い合わせフォーム</h3>
           <div class="form-grid">
             <div class="form-field">
@@ -1071,7 +1067,7 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.16, rootMargin: "0px 0px -40px 0px" });
 revealTargets.forEach((target) => revealObserver.observe(target));
 
-// Contact form — Web3Forms AJAX submission
+// Contact form
 document.getElementById('contact-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('form-submit');
@@ -1080,9 +1076,11 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   btn.textContent = '送信中...';
   result.style.display = 'none';
   try {
-    const res = await fetch('https://api.web3forms.com/submit', {
+    const data = Object.fromEntries(new FormData(this));
+    const res = await fetch('/api/contact', {
       method: 'POST',
-      body: new FormData(this)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
     });
     const json = await res.json();
     if (json.success) {
@@ -1090,7 +1088,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
       result.style.background = '#eef8f2';
       result.style.color = '#1e7a4a';
       result.style.border = '1.5px solid #80c9a0';
-      result.textContent = '✓ お問い合わせを受け付けました。担当者より折り返しご連絡いたします。';
+      result.textContent = '✓ お問い合わせを受け付けました。自動返信メールをご確認ください。担当者より2〜3営業日以内にご連絡いたします。';
       this.reset();
     } else {
       throw new Error(json.message || '送信エラー');

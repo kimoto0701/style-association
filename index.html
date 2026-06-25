@@ -303,6 +303,12 @@ section{padding:104px 24px}
   width:100%;
   height:auto;
 }
+.seido-interactive{display:block}
+.seido-fallback{display:none}
+@media(max-width:767px){
+  .seido-interactive{display:none}
+  .seido-fallback{display:block;width:100%;height:auto}
+}
 .document-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -745,7 +751,8 @@ input:focus,select:focus,textarea:focus{
         <a class="mail-link" href="http://www.otit.go.jp/" target="_blank" rel="noopener">OTIT（外国人技能実習機構）</a>が本制度の運営管理を行っております。<br>
         スタイルアソシエーションでは、受入企業や実習生のフォローを行います。</p>
         <div class="source-image">
-          <iframe src="seido-diagram.html" style="width:100%;height:760px;border:none;display:block;" title="新しい技能実習制度の概要（インタラクティブ図）" scrolling="no"></iframe>
+          <iframe class="seido-interactive" src="seido-diagram.html" style="width:100%;height:760px;border:none;display:block;" title="新しい技能実習制度の概要（インタラクティブ図）" scrolling="no"></iframe>
+          <img class="seido-fallback" src="assets/seido.jpg" alt="新しい技能実習制度の概要">
         </div>
       </div>
     </div>

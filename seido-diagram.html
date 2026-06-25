@@ -23,7 +23,7 @@ body{font-family:'Noto Sans JP',system-ui,sans-serif;font-size:12px;background:#
 .gov-right{background:#eef5ff;border:1.5px solid var(--ni-border);border-right:1.5px solid var(--ni-border);padding:0 14px;height:100%;display:flex;align-items:center;gap:6px;font-weight:700;font-size:12px;border-radius:0 4px 4px 0}
 
 /* MAIN 3 COLUMNS */
-#cols{display:grid;grid-template-columns:3fr 3.5fr 3fr;gap:6px;position:relative;align-items:stretch}
+#cols{display:grid;grid-template-columns:3fr 3.5fr 3fr;gap:20px;position:relative;align-items:stretch}
 .col{border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
 .col-hd{padding:7px 12px;font-weight:700;font-size:12px;text-align:center;color:white;flex-shrink:0}
 .col-okuri .col-hd{background:var(--ok)}
@@ -384,8 +384,6 @@ function rect(id) {
   if (!el || !base) return null;
   const er = el.getBoundingClientRect(), br = base.getBoundingClientRect();
   return {
-    x: er.left - br.left, y: er.top - br.top,
-    w: er.width, h: er.height,
     cx: er.left - br.left + er.width/2,
     cy: er.top - br.top + er.height/2,
     l: er.left - br.left, r: er.left - br.left + er.width,
@@ -393,63 +391,105 @@ function rect(id) {
   };
 }
 
-// Draw a single arrow
+function getColumnOf(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  if (el.closest('.col-okuri')) return 'okuri';
+  if (el.closest('.col-nihon')) return 'nihon';
+  if (el.closest('.col-gyosei')) return 'gyosei';
+  return null;
+}
+
+function getGapX(colA, colB) {
+  const base = document.getElementById('cols');
+  const br = base.getBoundingClientRect();
+  const pair = (colA==='okuri'||colB==='okuri') ? ['col-okuri','col-nihon'] : ['col-nihon','col-gyosei'];
+  const [lc, rc] = pair;
+  const leftEl = document.querySelector(`.${lc}`);
+  const rightEl = document.querySelector(`.${rc}`);
+  if (!leftEl||!rightEl) return 0;
+  const lr = leftEl.getBoundingClientRect();
+  const rr = rightEl.getBoundingClientRect();
+  return ((lr.right - br.left) + (rr.left - br.left)) / 2;
+}
+
+function svgLabel(svg, x, y, text, color, opacity) {
+  const lw = text.length * 7.5 + 10;
+  const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  bg.setAttribute('x', x - lw/2); bg.setAttribute('y', y - 17);
+  bg.setAttribute('width', lw); bg.setAttribute('height', 16);
+  bg.setAttribute('rx','3'); bg.setAttribute('fill','white');
+  bg.setAttribute('stroke','#ddd'); bg.setAttribute('stroke-width','1');
+  if (opacity) bg.setAttribute('opacity', opacity);
+  svg.appendChild(bg);
+  const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x', x); t.setAttribute('y', y - 5);
+  t.setAttribute('text-anchor','middle');
+  t.setAttribute('fill', color);
+  t.setAttribute('font-size','10');
+  t.setAttribute('font-weight','700');
+  t.setAttribute('font-family',"Noto Sans JP,system-ui,sans-serif");
+  if (opacity) t.setAttribute('opacity', opacity);
+  t.className.baseVal = 'arr-label';
+  t.textContent = text;
+  svg.appendChild(t);
+}
+
+function mkSvgPath(d, stroke, width, cls, markerId) {
+  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d', d);
+  p.setAttribute('stroke', stroke);
+  p.setAttribute('stroke-width', String(width));
+  p.setAttribute('fill','none');
+  p.setAttribute('stroke-linecap','round');
+  p.setAttribute('stroke-linejoin','round');
+  if (markerId) p.setAttribute('marker-end', `url(#${markerId})`);
+  if (cls) p.className.baseVal = cls;
+  return p;
+}
+
+// Draw a single arrow with L-shaped orthogonal routing
 function drawArrow(svg, from, to, bidirectional, label) {
   const fr = rect(from), tr = rect(to);
   if (!fr || !tr) return;
 
-  const isVert = Math.abs(fr.cx - tr.cx) < fr.w * 0.8;
-  const offset = bidirectional ? 6 : 0;
+  const fromCol = getColumnOf(from);
+  const toCol   = getColumnOf(to);
+  const sameCol = fromCol === toCol;
+  const off = bidirectional ? 5 : 0;
+  const GOLD = '#c87820', BLUE = '#1e66d0';
 
-  let x1,y1,x2,y2;
-  if (isVert) {
-    // vertical: top↔bottom
-    if (fr.cy < tr.cy) { x1=fr.cx; y1=fr.b+2; x2=tr.cx; y2=tr.t-2; }
-    else                { x1=fr.cx; y1=fr.t-2; x2=tr.cx; y2=tr.b+2; }
+  if (sameCol) {
+    const goDown = fr.cy < tr.cy;
+    const sx = fr.cx - off, ex = tr.cx - off;
+    const sy = goDown ? fr.b + 2 : fr.t - 2;
+    const ey = goDown ? tr.t - 2 : tr.b + 2;
+    svg.appendChild(mkSvgPath(`M ${sx} ${sy} V ${ey}`, GOLD, 2.5, 'arr-line', 'ah-gold'));
+    if (bidirectional) {
+      svg.appendChild(mkSvgPath(`M ${ex + off*2} ${ey} V ${sy}`, BLUE, 2, 'arr-ret', 'ah-blue'));
+    }
+    if (label) svgLabel(svg, sx + 26, (sy+ey)/2, label, GOLD);
   } else {
-    // horizontal: left↔right
-    if (fr.cx < tr.cx) { x1=fr.r+2; y1=fr.cy; x2=tr.l-2; y2=tr.cy; }
-    else               { x1=fr.l-2; y1=fr.cy; x2=tr.r+2; y2=tr.cy; }
-  }
+    const goRight = fr.cx < tr.cx;
+    const gapX = getGapX(fromCol, toCol);
+    const sy = fr.cy - off, ey = tr.cy - off;
+    const sx = goRight ? fr.r + 2 : fr.l - 2;
+    const ex = goRight ? tr.l - 2 : tr.r + 2;
+    const dFwd = Math.abs(sy-ey) < 3
+      ? `M ${sx} ${sy} H ${ex}`
+      : `M ${sx} ${sy} H ${gapX} V ${ey} H ${ex}`;
+    svg.appendChild(mkSvgPath(dFwd, GOLD, 2.5, 'arr-line', 'ah-gold'));
 
-  const mkPath = (dx,dy,cls,mend) => {
-    const p = document.createElementNS('http://www.w3.org/2000/svg','path');
-    p.setAttribute('d',`M ${x1+dx} ${y1+dy} L ${x2+dx} ${y2+dy}`);
-    p.setAttribute('stroke-width','2.5');
-    p.setAttribute('fill','none');
-    p.setAttribute('marker-end',mend);
-    p.className.baseVal = cls;
-    return p;
-  };
-
-  // Forward arrow (gold/outgoing)
-  const oy = isVert ? 0 : offset;
-  const ox = isVert ? offset : 0;
-  svg.appendChild(mkPath(-ox,-oy,'arr-line','url(#ah-gold)'));
-
-  if (bidirectional) {
-    const p2 = mkPath(ox, oy,'arr-ret','url(#ah-blue)');
-    p2.setAttribute('stroke-width','2');
-    svg.appendChild(p2);
-  }
-
-  // Label
-  if (label) {
-    const mx = (x1+x2)/2, my = (y1+y2)/2;
-    const lw = label.length * 7.5 + 8;
-    const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    bg.setAttribute('x', mx - lw/2); bg.setAttribute('y', my - 17);
-    bg.setAttribute('width', lw); bg.setAttribute('height', 16);
-    bg.setAttribute('rx','3'); bg.setAttribute('fill','white');
-    bg.setAttribute('stroke','#ddd'); bg.setAttribute('stroke-width','1');
-    svg.appendChild(bg);
-    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', mx); t.setAttribute('y', my - 5);
-    t.setAttribute('text-anchor','middle');
-    t.setAttribute('fill','#c87820');
-    t.className.baseVal = 'arr-label';
-    t.textContent = label;
-    svg.appendChild(t);
+    if (bidirectional) {
+      const sy2 = fr.cy + off, ey2 = tr.cy + off;
+      const rx = goRight ? tr.l - 2 : tr.r + 2;
+      const dx2 = goRight ? fr.r + 2 : fr.l - 2;
+      const dRet = Math.abs(sy2-ey2) < 3
+        ? `M ${rx} ${ey2} H ${dx2}`
+        : `M ${rx} ${ey2} H ${gapX} V ${sy2} H ${dx2}`;
+      svg.appendChild(mkSvgPath(dRet, BLUE, 2, 'arr-ret', 'ah-blue'));
+    }
+    if (label) svgLabel(svg, (sx + gapX) / 2, sy - 2, label, GOLD);
   }
 }
 
@@ -595,57 +635,60 @@ function exitShowAll() {
   document.getElementById('sbadge').style.background = '';
 }
 
-// Static (non-animated) arrow drawing for showAll mode
+// Static (non-animated) arrow drawing for showAll mode — same orthogonal routing
 function drawArrowStatic(svg, from, to, bidirectional, label) {
   const fr = rect(from), tr = rect(to);
   if (!fr || !tr) return;
 
-  const isVert = Math.abs(fr.cx - tr.cx) < fr.w * 0.8;
-  const offset = bidirectional ? 5 : 0;
+  const fromCol = getColumnOf(from);
+  const toCol   = getColumnOf(to);
+  const sameCol = fromCol === toCol;
+  const off = bidirectional ? 4 : 0;
+  const GOLD = '#c87820', BLUE = '#1e66d0';
 
-  let x1,y1,x2,y2;
-  if (isVert) {
-    if (fr.cy < tr.cy) { x1=fr.cx; y1=fr.b+2; x2=tr.cx; y2=tr.t-2; }
-    else                { x1=fr.cx; y1=fr.t-2; x2=tr.cx; y2=tr.b+2; }
-  } else {
-    if (fr.cx < tr.cx) { x1=fr.r+2; y1=fr.cy; x2=tr.l-2; y2=tr.cy; }
-    else               { x1=fr.l-2; y1=fr.cy; x2=tr.r+2; y2=tr.cy; }
-  }
-
-  const mkLine = (dx, dy, color, mend) => {
+  const mkS = (d, color, mend) => {
     const p = document.createElementNS('http://www.w3.org/2000/svg','path');
-    p.setAttribute('d', `M ${x1+dx} ${y1+dy} L ${x2+dx} ${y2+dy}`);
+    p.setAttribute('d', d);
     p.setAttribute('stroke', color);
     p.setAttribute('stroke-width','1.5');
     p.setAttribute('fill','none');
-    p.setAttribute('opacity','0.7');
+    p.setAttribute('stroke-linecap','round');
+    p.setAttribute('stroke-linejoin','round');
+    p.setAttribute('opacity','0.65');
     p.setAttribute('marker-end', mend);
     return p;
   };
 
-  svg.appendChild(mkLine(-offset, -offset, '#c87820', 'url(#ah-gold)'));
-  if (bidirectional) svg.appendChild(mkLine(offset, offset, '#1e66d0', 'url(#ah-blue)'));
-
-  if (label) {
-    const mx = (x1+x2)/2, my = (y1+y2)/2;
-    const lw = label.length * 7 + 8;
-    const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    bg.setAttribute('x', mx-lw/2); bg.setAttribute('y', my-17);
-    bg.setAttribute('width', lw); bg.setAttribute('height', 16);
-    bg.setAttribute('rx','3'); bg.setAttribute('fill','white');
-    bg.setAttribute('stroke','#ddd'); bg.setAttribute('stroke-width','1');
-    bg.setAttribute('opacity','0.9');
-    svg.appendChild(bg);
-    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', mx); t.setAttribute('y', my-5);
-    t.setAttribute('text-anchor','middle');
-    t.setAttribute('fill','#6b5010');
-    t.setAttribute('font-size','9');
-    t.setAttribute('font-weight','700');
-    t.setAttribute('font-family','Noto Sans JP,system-ui,sans-serif');
-    t.textContent = label;
-    svg.appendChild(t);
+  if (sameCol) {
+    const goDown = fr.cy < tr.cy;
+    const sx = fr.cx - off;
+    const sy = goDown ? fr.b + 2 : fr.t - 2;
+    const ey = goDown ? tr.t - 2 : tr.b + 2;
+    svg.appendChild(mkS(`M ${sx} ${sy} V ${ey}`, GOLD, 'url(#ah-gold)'));
+    if (bidirectional) svg.appendChild(mkS(`M ${sx + off*2} ${ey} V ${sy}`, BLUE, 'url(#ah-blue)'));
+    if (label) svgLabel(svg, sx + 26, (sy+ey)/2, label, '#6b5010', '0.85');
+  } else {
+    const goRight = fr.cx < tr.cx;
+    const gapX = getGapX(fromCol, toCol);
+    const sy = fr.cy - off, ey = tr.cy - off;
+    const sx = goRight ? fr.r + 2 : fr.l - 2;
+    const ex = goRight ? tr.l - 2 : tr.r + 2;
+    const dFwd = Math.abs(sy-ey) < 3
+      ? `M ${sx} ${sy} H ${ex}`
+      : `M ${sx} ${sy} H ${gapX} V ${ey} H ${ex}`;
+    svg.appendChild(mkS(dFwd, GOLD, 'url(#ah-gold)'));
+    if (bidirectional) {
+      const sy2 = fr.cy + off, ey2 = tr.cy + off;
+      const rx = goRight ? tr.l - 2 : tr.r + 2;
+      const dx2 = goRight ? fr.r + 2 : fr.l - 2;
+      const dRet = Math.abs(sy2-ey2) < 3
+        ? `M ${rx} ${ey2} H ${dx2}`
+        : `M ${rx} ${ey2} H ${gapX} V ${sy2} H ${dx2}`;
+      svg.appendChild(mkS(dRet, BLUE, 'url(#ah-blue)'));
+    }
+    if (label) svgLabel(svg, (sx + gapX) / 2, sy - 2, label, '#6b5010', '0.85');
   }
+
 }
 
 document.getElementById('bplay').onclick = () => {

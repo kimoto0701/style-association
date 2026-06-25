@@ -608,16 +608,7 @@ function showAll() {
   clearArrows();
   const svg = document.getElementById('svg');
 
-  // Collect unique arrows across all steps, draw statically
-  const seen = new Set();
-  STEPS.forEach(step => {
-    step.arrows.forEach(a => {
-      const key = a.f + '-' + a.t;
-      if (seen.has(key)) return;
-      seen.add(key);
-      drawArrowStatic(svg, a.f, a.t, a.bi, a.label);
-    });
-  });
+  drawAllArrows(svg);
 
   // Step panel
   document.getElementById('sbadge').textContent = '全';
@@ -635,15 +626,47 @@ function exitShowAll() {
   document.getElementById('sbadge').style.background = '';
 }
 
+// Assign non-overlapping gap lanes and draw all unique arrows (used by showAll + resize)
+function drawAllArrows(svg) {
+  const uniqueArrows = [];
+  const seen = new Set();
+  STEPS.forEach(step => {
+    step.arrows.forEach(a => {
+      const key = a.f + '-' + a.t;
+      if (seen.has(key)) return;
+      seen.add(key);
+      uniqueArrows.push(a);
+    });
+  });
+  const leftGap = [], rightGap = [];
+  uniqueArrows.forEach(a => {
+    const fc = getColumnOf(a.f), tc = getColumnOf(a.t);
+    if (fc === tc) return;
+    (fc === 'okuri' || tc === 'okuri') ? leftGap.push(a) : rightGap.push(a);
+  });
+  function laneOff(list, a) {
+    const n = list.length;
+    return n <= 1 ? 0 : (list.indexOf(a) - (n - 1) / 2) * 8;
+  }
+  uniqueArrows.forEach(a => {
+    const fc = getColumnOf(a.f), tc = getColumnOf(a.t);
+    const goff = fc !== tc
+      ? ((fc === 'okuri' || tc === 'okuri') ? laneOff(leftGap, a) : laneOff(rightGap, a))
+      : 0;
+    drawArrowStatic(svg, a.f, a.t, a.bi, null, goff);
+  });
+}
+
 // Static (non-animated) arrow drawing for showAll mode — same orthogonal routing
-function drawArrowStatic(svg, from, to, bidirectional, label) {
+function drawArrowStatic(svg, from, to, bidirectional, label, gapOffset) {
+  gapOffset = gapOffset || 0;
   const fr = rect(from), tr = rect(to);
   if (!fr || !tr) return;
 
   const fromCol = getColumnOf(from);
   const toCol   = getColumnOf(to);
   const sameCol = fromCol === toCol;
-  const off = bidirectional ? 4 : 0;
+  const off = bidirectional ? 2 : 0;
   const GOLD = '#c87820', BLUE = '#1e66d0';
 
   const mkS = (d, color, mend) => {
@@ -669,7 +692,7 @@ function drawArrowStatic(svg, from, to, bidirectional, label) {
     if (label) svgLabel(svg, sx + 26, (sy+ey)/2, label, '#6b5010', '0.85');
   } else {
     const goRight = fr.cx < tr.cx;
-    const gapX = getGapX(fromCol, toCol);
+    const gapX = getGapX(fromCol, toCol) + gapOffset;
     const sy = fr.cy - off, ey = tr.cy - off;
     const sx = goRight ? fr.r + 2 : fr.l - 2;
     const ex = goRight ? tr.l - 2 : tr.r + 2;
@@ -688,7 +711,6 @@ function drawArrowStatic(svg, from, to, bidirectional, label) {
     }
     if (label) svgLabel(svg, (sx + gapX) / 2, sy - 2, label, '#6b5010', '0.85');
   }
-
 }
 
 document.getElementById('bplay').onclick = () => {
@@ -720,7 +742,9 @@ document.querySelectorAll('.ebox').forEach(el => {
 
 // Redraw arrows on resize
 window.addEventListener('resize', () => {
-  if (cur >= 0) { sizeSvg(); clearArrows(); const svg=document.getElementById('svg'); STEPS[cur].arrows.forEach(a=>drawArrow(svg,a.f,a.t,a.bi,a.label)); }
+  const svg = document.getElementById('svg');
+  if (showingAll) { sizeSvg(); clearArrows(); drawAllArrows(svg); }
+  else if (cur >= 0) { sizeSvg(); clearArrows(); STEPS[cur].arrows.forEach(a=>drawArrow(svg,a.f,a.t,a.bi,a.label)); }
 });
 
 // Init

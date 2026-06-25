@@ -974,7 +974,11 @@ input:focus,select:focus,textarea:focus{
               title="協同組合スタイルアソシエーション 所在地"></iframe>
           </div>
         </aside>
-        <form class="contact-form" action="mailto:info@style-association.jp" method="post" enctype="text/plain">
+        <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="418ee1cc-4c66-415c-8d24-6d58ef30165d">
+          <input type="hidden" name="subject" value="【お問い合わせ】協同組合スタイルアソシエーション">
+          <input type="hidden" name="from_name" value="スタイルアソシエーション Webサイト">
+          <input type="hidden" name="redirect" value="false">
           <h3>お問い合わせフォーム</h3>
           <div class="form-grid">
             <div class="form-field">
@@ -1011,7 +1015,8 @@ input:focus,select:focus,textarea:focus{
             <textarea id="message" name="message" required placeholder="現在の状況、受け入れ希望時期、人数、業種などをご記入ください。"></textarea>
           </div>
           <p class="form-note">送信前に入力内容をご確認ください。個人情報はお問い合わせ対応の目的で利用します。</p>
-          <button class="btn btn-primary" type="submit">送信する</button>
+          <button class="btn btn-primary" type="submit" id="form-submit">送信する</button>
+          <div id="form-result" style="display:none;margin-top:16px;padding:14px 18px;border-radius:8px;font-size:14px;font-weight:700"></div>
         </form>
       </div>
     </div>
@@ -1065,6 +1070,42 @@ const revealObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.16, rootMargin: "0px 0px -40px 0px" });
 revealTargets.forEach((target) => revealObserver.observe(target));
+
+// Contact form — Web3Forms AJAX submission
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('form-submit');
+  const result = document.getElementById('form-result');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  result.style.display = 'none';
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: new FormData(this)
+    });
+    const json = await res.json();
+    if (json.success) {
+      result.style.display = 'block';
+      result.style.background = '#eef8f2';
+      result.style.color = '#1e7a4a';
+      result.style.border = '1.5px solid #80c9a0';
+      result.textContent = '✓ お問い合わせを受け付けました。担当者より折り返しご連絡いたします。';
+      this.reset();
+    } else {
+      throw new Error(json.message || '送信エラー');
+    }
+  } catch(err) {
+    result.style.display = 'block';
+    result.style.background = '#fff5f5';
+    result.style.color = '#c44343';
+    result.style.border = '1.5px solid #f5a0a0';
+    result.textContent = '送信に失敗しました。お手数ですが info@style-association.jp へ直接メールをお送りください。';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '送信する';
+  }
+});
 </script>
 </body>
 </html>
